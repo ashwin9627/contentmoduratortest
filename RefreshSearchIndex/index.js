@@ -3,15 +3,15 @@ const request = require("request-promise");
 module.exports =async function (context, req) {
   try{
     context.log('iNext API Trigered');
-    var header=req.headers['key'];  
+    var key=req.headers['key'];  
     var URL=req.headers['url'];
     var id=context.bindingData.id;
-    var lang=req.query.language;
+    var lang=context.bindingData.language;
 
     context.log(id)
      
     context.log('Callingobject fun')
-    var FormRequestObject=GETTerms(URL,header,"post",req.body,id,lang)
+    var FormRequestObject=FormRequestObjectMethod(URL,key,"post",req.body,id,lang)
     
      var result=await request(FormRequestObject); 
     
@@ -26,20 +26,18 @@ module.exports =async function (context, req) {
   }
 }
 
-function GETTerms(URL,header,Type="GET",body=null,id=null,lang) {
+function FormRequestObjectMethod(URL,key,Type="GET",body=null,id=null,lang) {
     console.log(Type)
     //context.log('GetTerms started')
-    if(id==null)
-     URL=URL+'/contentmoderator/lists/v1.0/termlists'
-    else if(id!=null && lang!=null)
-     URL=URL+'/contentmoderator/lists/v1.0/termlists/'+id+'/RefreshIndex?'+lang
-    else
-     URL=URL+'/contentmoderator/lists/v1.0/termlists/'+id
+    
+     if(id!=null && lang!=null)
+     URL=URL+'/contentmoderator/lists/v1.0/termlists/'+id+'/RefreshIndex?language='+lang
+   
      var options = {
       'method': Type,
       'url': URL,
       'headers': {
-        'Ocp-Apim-Subscription-Key': header,
+        'Ocp-Apim-Subscription-Key': key,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(body)

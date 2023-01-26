@@ -8,7 +8,7 @@
       "methods": [
         "delete"
       ],
-      "route": "term/{id}"
+      "route": "terms/{id}/{language}"
     },
     {
       "type": "http",

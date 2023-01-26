@@ -3,14 +3,14 @@ const request = require("request-promise");
 module.exports =async function (context, req) {
   try{
     context.log('iNext API Trigered');
-    var header=req.headers['key'];  
+    var key=req.headers['key'];  
     var URL=req.headers['url'];
     var id=context.bindingData.id;
 
     context.log(id)
      
     context.log('Callingobject fun')
-    var FormRequestObject=GETTerms(URL,header,"Get",req.body,id)
+    var FormRequestObject=FormRequestObjectMethod(URL,key,"get",req.body,id)
     
      var result=await request(FormRequestObject); 
     
@@ -25,7 +25,7 @@ module.exports =async function (context, req) {
   }
 }
 
-function GETTerms(URL,header,Type="GET",body=null,id=null) {
+function FormRequestObjectMethod(URL,key,Type="GET",body=null,id=null) {
     console.log(Type)
     //context.log('GetTerms started')
     if(id==null)
@@ -36,7 +36,7 @@ function GETTerms(URL,header,Type="GET",body=null,id=null) {
       'method': Type,
       'url': URL,
       'headers': {
-        'Ocp-Apim-Subscription-Key': header,
+        'Ocp-Apim-Subscription-Key': key,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(body)

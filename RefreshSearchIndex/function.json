@@ -9,7 +9,7 @@
         "get",
         "post"
       ],
-      "route": "refreshsearchindex/{id}"
+      "route": "refreshsearchindex/{id}/{language}"
     },
     {
       "type": "http",

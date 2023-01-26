@@ -8,7 +8,7 @@
       "methods": [
         "put"
       ],
-      "route": "term/{id}"
+      "route": "termlist/{id}"
     },
     {
       "type": "http",
