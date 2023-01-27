@@ -10,28 +10,37 @@ module.exports =async function (context, req) {
     var pii=req.query.pii;
     var classify=req.query.classify;
     var profanityQuery  
+    
     // if(autocorrect!=null)profanityQuery=profanityQuery+"autocorrect=True" 
-    context.log('Callingobject fun')
+    //Form request object
     var FormRequestObject=FormRequestObjectMethod(URL,key,"post",req.body,listid)
+    //Trigger API
+    var result=await request(FormRequestObject); 
     
-     var result=await request(FormRequestObject); 
-    
-    context.log('..............inside request api call........')
     context.res = {
       // status: 200, /* Defaults to 200 */
+       headers: {
+                'Content-Type': 'application/json'
+            },
       body: result
     }; 
   }
   catch(error){
   context.log(error)
+  context.res = {
+    status: 500,
+    headers: {
+             'Content-Type': 'application/json'
+         },
+   body: error.message
+ };
   }
 }
 
 function FormRequestObjectMethod(URL,key,Type="GET",body=null,listid) {
-    console.log(Type)
-    //context.log('GetTerms started')    
-    URL=URL+'/contentmoderator/moderate/v1.0/ProcessText/Screen?listId='+listid
-     //URL=URL+'/contentmoderator/lists/v1.0/termlists/'+id+'/terms?'+lang
+  try{ 
+    //URL=URL+'/contentmoderator/moderate/v1.0/ProcessText/Screen?listId='+listid
+    URL=URL+'/contentmoderator/moderate/v1.0/ProcessText/Screen?autocorrect=True&PII=True&classify=True&listId='+listid
     
      var options = {
       'method': Type,
@@ -43,5 +52,10 @@ function FormRequestObjectMethod(URL,key,Type="GET",body=null,listid) {
       body: JSON.stringify(body)
     };
     return options;
+     }
+  catch(error){
+  context.log(error)
+  return error;
+  }
      }
     

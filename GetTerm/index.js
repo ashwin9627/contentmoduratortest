@@ -8,27 +8,34 @@ module.exports =async function (context, req) {
     var id=context.bindingData.id;
     var lang=context.bindingData.language;
 
-    context.log(id)
-     
-    context.log('Callingobject fun')
+    //Form request object
     var FormRequestObject=FormRequestObjectMethod(URL,key,"get",req.body,id,lang)
     
-     var result=await request(FormRequestObject); 
+    //API trigger
+    var result=await request(FormRequestObject); 
     
     context.log('..............inside request api call........')
     context.res = {
       // status: 200, /* Defaults to 200 */
+      headers: {
+        'Content-Type': 'application/json'
+    },
       body: result
     }; 
   }
   catch(error){
   context.log(error)
+  context.res = {
+    status: 500,
+    headers: {
+             'Content-Type': 'application/json'
+         },
+   body: error.message
+ };
   }
 }
 
-function FormRequestObjectMethod(URL,key,Type="GET",body=null,id=null,lang) {
-    console.log(Type)
-    //context.log('GetTerms started')    
+function FormRequestObjectMethod(URL,key,Type="GET",body=null,id=null,lang) {  
      URL=URL+'/contentmoderator/lists/v1.0/termlists/'+id+'/terms?language='+lang
     
      var options = {

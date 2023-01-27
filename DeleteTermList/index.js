@@ -3,31 +3,36 @@ const request = require("request-promise");
 module.exports =async function (context, req) {
   try{
     context.log('iNext API Trigered');
+    //Read request header
     var key=req.headers['key'];  
     var URL=req.headers['url'];
     var id=context.bindingData.id;
-
-    context.log(id)
-     
-    context.log('Callingobject fun')
+    //Form request object
     var FormRequestObject=FormRequestObjectMethod(URL,key,"delete",req.body,id)
+    //API trigger
+    var result=await request(FormRequestObject); 
     
-     var result=await request(FormRequestObject); 
-    
-    context.log('..............inside request api call........')
     context.res = {
       // status: 200, /* Defaults to 200 */
+      headers: {
+        'Content-Type': 'application/json'
+    },
       body: result
     }; 
   }
   catch(error){
   context.log(error)
+  context.res = {
+    status: 500,
+    headers: {
+             'Content-Type': 'application/json'
+         },
+   body: error.message
+ };
   }
 }
 
 function FormRequestObjectMethod(URL,key,Type="GET",body=null,id=null) {
-    console.log(Type)
-    //context.log('GetTerms started')
     if(id==null)
      URL=URL+'/contentmoderator/lists/v1.0/termlists'
     else
